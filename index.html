@@ -383,6 +383,9 @@
         setTimeout(() => {
             introScreen.style.display = "none";
             wrapper.style.display = "block";
+
+            alert("Make sure your audio is turned on! 🎵");
+            
             music.currentTime = 0;
             music.volume = 1;
             music.play();
