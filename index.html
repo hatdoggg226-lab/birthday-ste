@@ -19,7 +19,13 @@
 </head>
 
 <body style="background: url('./images/bday-bg1.jpeg') no-repeat center center fixed; background-size: cover;">
-    <div id="wrapper">
+    <div id="introScreen">
+        <div class="introContent">
+            <h1>Hello bebi 💖</h1>
+            <button id="enterBtn">Click me for a surprise 🎁</button>
+        </div>
+    </div>
+    <div id="wrapper" style="display: none;">
         <div class="flag__birthday">
             <img src="./images/1.png" alt="" width="350" class="flag__left">
             <img src="./images/1.png" alt="" width="350" class="flag__right">
@@ -53,7 +59,7 @@
                 </div>
                 <div class="btn">
                     <div class="our-gallery">
-    
+                    
                         <!-- hidden checkbox -->
                         <input type="checkbox" id="toggleGallery">
 
@@ -73,7 +79,8 @@
                             </div>
                         </div>
 
-                </div>
+                    </div>
+                    
                     <button id="btn__letter">
                         <div class="mail">
                             Click Here lovey, wifey, bebi, hubs
@@ -85,8 +92,9 @@
             </div>
             <div class="right">
                 <div class="box__account">
-                    <div class="image">
-                        <img src="./images/pic1.jpg" alt="">
+                    <div class="image carousel">
+                        <img src="./images/pic1.jpg" class="active" alt="">
+
                     </div>
                     <div class="name">
                         <i class="fa-solid fa-heart"></i>
@@ -202,13 +210,13 @@
     let currentIndexTitle = 0;
     let date__of__birth = document.querySelector(".date__of__birth span");
     let text__letter = document.querySelector(".text__letter p");
+
     setTimeout(function () {
         timeDatetxt = setInterval(function () {
             if (currentIndex < charArrDate.length) {
                 date__of__birth.textContent += charArrDate[currentIndex];
                 currentIndex++;
-            }
-            else {
+            } else {
                 let i = document.createElement("i");
                 i.className = "fa-solid fa-star"
                 document.querySelector(".date__of__birth").prepend(i)
@@ -220,6 +228,7 @@
 
     var intervalContent;
     var intervalTitle;
+
     $("#btn__letter").on("click", function () {
         $(".box__letter").slideDown()
         setTimeout(function () {
@@ -233,8 +242,7 @@
                     i.className = "fa-solid fa-heart"
                     document.querySelector(".title__letter").appendChild(i)
                     currentIndexTitle++;
-                }
-                else {
+                } else {
                     clearInterval(intervalTitle)
                 }
             }, 100)
@@ -254,40 +262,32 @@
                 if (currentIndexLetter < charArrDateLetter.length) {
                     text__letter.textContent += charArrDateLetter[currentIndexLetter];
                     currentIndexLetter++;
-                }
-                else {
+                } else {
                     clearInterval(intervalContent)
                 }
             }, 50)
         }, 6000)
     })
-    $(".fa-xmark").on("click", function () { 
 
-        // hide message
+    $(".fa-xmark").on("click", function () {
         boxmail.classList.remove('active');
-
-        // stop typing animation
         clearInterval(intervalContent);
 
-        // safe resets (no errors)
         let titleLetterEl = document.querySelector(".title__letter");
         if (titleLetterEl) titleLetterEl.textContent = "";
-
         if (text__letter) text__letter.textContent = "";
 
         currentIndexLetter = 0;
         currentIndexTitle = 0;
 
-        // reset animations
         document.querySelector("#heart__letter")?.classList.remove("animationOp");
         document.querySelector(".love__img")?.classList.remove("animationOp");
         document.querySelector("#mewmew")?.classList.remove("animationOp");
-
         document.querySelectorAll(".heart").forEach((item) => {
             item.classList.remove("animation");
         });
 
-        // 🔥 reset cake for next open
+        // reset cake candles
         blownCount = 0;
         candles.forEach(c => {
             c.classList.remove('off');
@@ -295,65 +295,23 @@
         });
     });
 
-
-
     let mailBox = document.querySelector('.mail')
     let boxmail = document.querySelector('.boxMail')
-    var close = document.querySelector('.fa-xmark')
-
+    let fullScreen = document.querySelector('.fullscreenMessage')
+    let closeFull = document.querySelector('.fullscreenMessage .closeFull')
     let cakeScreen = document.querySelector('.cakeScreen');
     let candles = document.querySelectorAll('.candle');
     let music = document.getElementById('bdayMusic');
-
-    function fadeInAudio(audio, duration = 2000) {
-        audio.volume = 0;
-        audio.play();
-        let step = 0.05;
-        let interval = duration * step / 1; // ms per step
-        let vol = 0;
-
-        let fade = setInterval(() => {
-            vol += step;
-            if (vol >= 1) {
-                audio.volume = 1;
-                clearInterval(fade);
-            } else {
-                audio.volume = vol;
-            }
-        }, interval);
-    }
-
-function fadeOutAudio(audio, duration = 2000) {
-    let step = 0.05;
-    let interval = duration * step / 1;
-    let vol = audio.volume;
-
-    let fade = setInterval(() => {
-        vol -= step;
-        if (vol <= 0) {
-            audio.volume = 0;
-            audio.pause();
-            clearInterval(fade);
-        } else {
-            audio.volume = vol;
-        }
-    }, interval);
-}
-
     let blownCount = 0;
 
     mailBox.onclick = function () {
         mailBox.classList.toggle('active');
-
-        // show cake
         cakeScreen.classList.add('active');
-
-        // play music
         music.currentTime = 0;
-        fadeInAudio(music, 3000); // fade in over 3 seconds
+        music.volume = 1;
+        music.play();
     }
 
-    // candle click
     candles.forEach(candle => {
         candle.addEventListener('click', () => {
             if (!candle.classList.contains('off')) {
@@ -361,22 +319,19 @@ function fadeOutAudio(audio, duration = 2000) {
                 candle.textContent = "💨";
                 blownCount++;
             }
-
-            // all candles blown
             if (blownCount === candles.length) {
                 launchConfetti();
-
-                fadeOutAudio(music, 3000); // fade out over 3 seconds
-
                 setTimeout(() => {
                     cakeScreen.classList.remove('active');
-                    boxmail.classList.add('active');
+                    boxmail.classList.add('active'); // Show boxMail
+                    music.currentTime = 0; // restart music
+                    music.volume = 1;
+                    music.play(); // play birthday music
                 }, 2000);
             }
         });
     });
 
-    // 🎉 confetti function
     function launchConfetti() {
         for (let i = 0; i < 50; i++) {
             let conf = document.createElement('div');
@@ -385,33 +340,54 @@ function fadeOutAudio(audio, duration = 2000) {
             conf.style.backgroundColor =
                 ['#ff0', '#ff4d6d', '#00f', '#0f0'][Math.floor(Math.random() * 4)];
             conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
-
             document.body.appendChild(conf);
-
             setTimeout(() => conf.remove(), 3000);
         }
     }
 
-    let fullScreen = document.querySelector('.fullscreenMessage');
-    let fullImg = document.querySelector('.fullscreenMessage img');
-    let closeFull = document.querySelector('.closeFull');
-
-    // click the small message → open fullscreen
-    document.querySelector('.card2 img').addEventListener('click', function () {
-        fullScreen.classList.add('active');
-    });
-
-    // close fullscreen (X button)
-    closeFull.addEventListener('click', function () {
-        fullScreen.classList.remove('active');
-    });
-
-    // close when clicking outside image
-    fullScreen.addEventListener('click', function (e) {
-        if (e.target !== fullImg) {
-            fullScreen.classList.remove('active');
+    // fullscreen message
+    setTimeout(() => {
+        let messageImg = document.querySelector('.card2 img');
+        if (messageImg) {
+            messageImg.addEventListener('click', function () {
+                fullScreen.classList.add('active');
+            });
         }
-    });
+    }, 1000);
+
+    closeFull.onclick = () => fullScreen.classList.remove('active');
+
+    function fadeOutAudio(audio, duration = 2000) {
+        let step = 0.05;
+        let interval = duration * step / 1;
+        let vol = audio.volume;
+        let fade = setInterval(() => {
+            vol -= step;
+            if (vol <= 0) {
+                audio.volume = 0;
+                audio.pause();
+                clearInterval(fade);
+            } else {
+                audio.volume = vol;
+            }
+        }, interval);
+    }
+
+    let enterBtn = document.getElementById("enterBtn");
+    let introScreen = document.getElementById("introScreen");
+    let wrapper = document.getElementById("wrapper");
+
+    enterBtn.onclick = function () {
+        introScreen.style.opacity = "0";
+        introScreen.style.transition = "1s";
+        setTimeout(() => {
+            introScreen.style.display = "none";
+            wrapper.style.display = "block";
+            music.currentTime = 0;
+            music.volume = 1;
+            music.play();
+        }, 1000);
+    };
 </script>
 
 </html>
